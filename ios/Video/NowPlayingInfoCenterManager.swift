@@ -81,7 +81,7 @@ class NowPlayingInfoCenterManager {
         }
     }
 
-    public func cleanup() {
+    func cleanup() {
         observers.removeAll()
         players.removeAllObjects()
 
@@ -199,7 +199,7 @@ class NowPlayingInfoCenterManager {
         remoteCommandCenter.togglePlayPauseCommand.removeTarget(togglePlayPauseTarget)
     }
 
-    public func updateNowPlayingInfo() {
+    func updateNowPlayingInfo() {
         guard let player = currentPlayer, let currentItem = player.currentItem else {
             invalidateCommandTargets()
             MPNowPlayingInfoCenter.default().nowPlayingInfo = [:]
@@ -261,7 +261,7 @@ class NowPlayingInfoCenterManager {
         }
     }
 
-    // We will observe players rate to find last active player that info will be displayed
+    /// We will observe players rate to find last active player that info will be displayed
     private func observePlayers(player: AVPlayer) -> NSKeyValueObservation {
         return player.observe(\.rate) { [weak self] player, change in
             guard let self else { return }

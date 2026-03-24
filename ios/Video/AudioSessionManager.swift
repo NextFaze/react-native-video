@@ -7,8 +7,12 @@ class AudioSessionManager {
     private var videoViews = NSHashTable<RCTVideo>.weakObjects()
     private var isAudioSessionActive = false
     private var remoteControlEventsActive = false
+    private var isAudioSessionManagementForcedDisabled = false
 
     private var isAudioSessionManagementDisabled: Bool {
+        if isAudioSessionManagementForcedDisabled {
+            return true
+        }
         // If no views are registered, disable audio session management
         if videoViews.allObjects.isEmpty {
             return true
@@ -42,6 +46,10 @@ class AudioSessionManager {
     }
 
     // MARK: - Public API
+
+    func setIsAudioSessionManagementForcedDisabled(disabled: Bool) {
+        isAudioSessionManagementForcedDisabled = disabled
+    }
 
     func registerView(view: RCTVideo) {
         if videoViews.contains(view) {
@@ -78,7 +86,7 @@ class AudioSessionManager {
         configureAudioSession()
     }
 
-    // Handle remote control events from NowPlayingInfoCenterManager
+    /// Handle remote control events from NowPlayingInfoCenterManager
     func setRemoteControlEventsActive(_ active: Bool) {
         if isAudioSessionManagementDisabled {
             // AUDIO SESSION MANAGEMENT DISABLED BY USER
@@ -103,7 +111,7 @@ class AudioSessionManager {
         }
     }
 
-    // Notification that a player's properties have changed
+    /// Notification that a player's properties have changed
     func playerPropertiesChanged(view: RCTVideo) {
         // Only update if this is a registered view
         if videoViews.contains(view) {
